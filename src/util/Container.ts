@@ -100,7 +100,7 @@ const commandCollection = new CommandCollection(commands);
 const messageHandler = new MessageHandler(commandCollection);
 
 const soundBot = new SoundBot(config, commandCollection, messageHandler, queue);
-export const api = new Api();
+const api = new Api(soundBot);
 
 interface SoundBotContainer {
   api: Api;

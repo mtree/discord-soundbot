@@ -6,6 +6,7 @@ import {
   Message,
   PermissionFlagsBits,
   TextChannel,
+  VoiceBasedChannel,
   VoiceState
 } from 'discord.js';
 
@@ -20,6 +21,8 @@ import { getSounds } from '~/util/SoundUtil';
 import Command from '../commands/base/Command';
 import CommandCollection from './CommandCollection';
 import MessageHandler from './MessageHandler';
+
+let server: Guild;
 
 export default class SoundBot extends Client {
   private readonly config: Config;
@@ -74,6 +77,12 @@ export default class SoundBot extends Client {
     this.commands.registerUserCommands(this.user);
   }
 
+  public playSound(sound: string) {
+    const currentVoiceChannel = server.channels.cache.find(channel => channel.name === 'chroscice');
+
+    this.queue.add(new QueueItem(sound, currentVoiceChannel as VoiceBasedChannel));
+  }
+
   private onUserJoinsVoiceChannel(oldState: VoiceState, newState: VoiceState) {
     const { channel: previousVoiceChannel } = oldState;
     const { channel: currentVoiceChannel, member } = newState;
@@ -108,6 +117,7 @@ export default class SoundBot extends Client {
 
   private onBotJoinsServer(guild: Guild) {
     if (!guild.available) return;
+    server = guild;
 
     const channel = this.findFirstWritableChannel(guild);
     if (!channel) return;

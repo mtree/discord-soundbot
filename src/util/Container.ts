@@ -1,6 +1,7 @@
 import Config from '~/config/Config';
 import SoundQueue from '~/queue/SoundQueue';
 
+import Api from '../api';
 import CommandCollection from '../bot/CommandCollection';
 import MessageHandler from '../bot/MessageHandler';
 import SoundBot from '../bot/SoundBot';
@@ -99,13 +100,16 @@ const commandCollection = new CommandCollection(commands);
 const messageHandler = new MessageHandler(commandCollection);
 
 const soundBot = new SoundBot(config, commandCollection, messageHandler, queue);
+export const api = new Api();
 
 interface SoundBotContainer {
+  api: Api;
   config: Config;
   soundBot: SoundBot;
 }
 
 export default {
+  api,
   config,
   soundBot
 } as SoundBotContainer;

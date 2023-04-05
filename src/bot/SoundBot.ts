@@ -22,8 +22,6 @@ import Command from '../commands/base/Command';
 import CommandCollection from './CommandCollection';
 import MessageHandler from './MessageHandler';
 
-let server: Guild;
-
 export default class SoundBot extends Client {
   private readonly config: Config;
   private readonly commands: CommandCollection;
@@ -77,8 +75,12 @@ export default class SoundBot extends Client {
     this.commands.registerUserCommands(this.user);
   }
 
-  public playSound(sound: string) {
-    const currentVoiceChannel = server.channels.cache.find(channel => channel.name === 'chroscice');
+  public async playSound(sound: string) {
+    const guilds = this.guilds.cache.map(guild => guild.id);
+
+    const guild = await this.guilds.fetch(guilds[0]);
+
+    const currentVoiceChannel = guild.channels.cache.find(channel => channel.name === 'chroscice');
 
     this.queue.add(new QueueItem(sound, currentVoiceChannel as VoiceBasedChannel));
   }
@@ -117,7 +119,6 @@ export default class SoundBot extends Client {
 
   private onBotJoinsServer(guild: Guild) {
     if (!guild.available) return;
-    server = guild;
 
     const channel = this.findFirstWritableChannel(guild);
     if (!channel) return;

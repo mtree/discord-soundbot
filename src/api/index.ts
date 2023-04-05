@@ -22,8 +22,9 @@ class Api {
     });
 
     this.http.get('/sounds/play/:soundName', (req, res) => {
-      this.soundBot.playSound(req.params.soundName);
-      res.send(req.params.soundName);
+      this.soundBot.playSound(req.params.soundName).then(() => {
+        res.send(req.params.soundName);
+      });
     });
   }
 
